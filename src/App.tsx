@@ -2,7 +2,7 @@
  * @Description: Post-ERCP-Cholecustitis Discrimination计算页面
  * @Author: renlirong
  * @Date: 2024-04-12 10:08:40
- * @LastEditTime: 2024-04-14 15:41:42
+ * @LastEditTime: 2024-04-14 18:37:16
  * @LastEditors: renlirong
  */
 import React, { useState } from 'react';
@@ -82,7 +82,7 @@ function ResultCard({ resultScore, formVisible,returnForm}: { resultScore: numbe
     <Card bordered={false} style={resultCardStyle}>
       <Row gutter={16}>
     <Col span={12}>
-      <Statistic title="Score" value={resultScore}  />
+      <Statistic title="Score" value={resultScore.toFixed(3)}  />
     </Col>
     <Col span={12}>
       <Statistic title="Rank" value={resultScore<165?'Low Risk':(resultScore>=230?'High Risk':'Medium Risk')}  prefix={resultScore<165?<SmileOutlined />:(resultScore>=230?<FrownOutlined />:<MehOutlined />)} />
@@ -111,18 +111,18 @@ function App() {
   }
   // 提交按钮
   const onFinish: FormProps["onFinish"] = (values) => {
-    const { age, CysC, ALB, SCr, SMD, LAMA_SMA, CVDs, Diabetes } = values;
-  
+    const { age,sex, CysC, ALB, SCr, SMD, LAMA_SMA, CVDs, Diabetes } = values;
+
+    console.log('values',values)
     // 计算各个参数的得分
     const ageScore = getScore(age, [48, 61]);
     const CysCScore = getScore(CysC, [4.12, 5.48]);
     const ALBScore = getScore(ALB, [30.6, 35.5]);
     const SCrScore = getScore(SCr, [681, 917.2]);
-    const SMDScore = getScore(SMD, [43.99, 27.57]);
-    const LAMA_SMAScore = getScore(LAMA_SMA, [0.33, 0.54]);
-    const CVDScore = CVDs === "Yes" ? 1 : 0;
-    const DiabetesScore = Diabetes === "Yes" ? 1 : 0;
-  
+    const SMDScore =sex? getScore(SMD, [27.57,43.99]):getScore(SMD, [21.27,37.57]);
+    const LAMA_SMAScore = sex? getScore(LAMA_SMA, [0.33, 0.54]):getScore(LAMA_SMA, [0.39, 0.62]);
+    const CVDScore = CVDs ;
+    const DiabetesScore = Diabetes;
     // 计算患者的风险得分
     const result =
       22.961 * ageScore +
@@ -166,6 +166,20 @@ function App() {
       </Col>
       <Col span={8} style={{paddingRight:'2rem'}}>
       <Form.Item
+      label="Sex"
+      name="sex"
+      rules={[{ required: true, message: 'Please select sex!' }]}
+    >
+      <Select
+      options={[
+        { value: 1, label: 'male' },
+        { value: 0, label: 'female' },
+      ]}
+    />
+    </Form.Item>
+      </Col>
+      <Col span={8} style={{paddingRight:'2rem'}}>
+      <Form.Item
       label="CysC"
       name="CysC"
       rules={[{ required: true, message: 'Please input CysC!' }]}
@@ -173,7 +187,10 @@ function App() {
       <Input suffix="mg/L"/>
     </Form.Item>
       </Col>
-      <Col span={8} style={{paddingRight:'2rem'}}>
+
+    </Row>
+    <Row>
+    <Col span={8} style={{paddingRight:'2rem'}}>
       <Form.Item
       label="ALB"
       name="ALB"
@@ -182,8 +199,6 @@ function App() {
       <Input suffix="g/L"/>
     </Form.Item>
       </Col>
-    </Row>
-    <Row>
       <Col span={8} style={{paddingRight:'2rem'}}>
       <Form.Item
       label="SCr"
@@ -202,7 +217,10 @@ function App() {
       <Input suffix="Hu" />
     </Form.Item>
       </Col>
-      <Col span={8} style={{paddingRight:'2rem'}}>
+
+    </Row>
+    <Row>
+    <Col span={8} style={{paddingRight:'2rem'}}>
       <Form.Item
       label="LAMA/SMA"
       name="LAMA_SMA"
@@ -211,8 +229,6 @@ function App() {
       <Input suffix="Hu"/>
     </Form.Item>
       </Col>
-    </Row>
-    <Row>
       <Col span={8} style={{paddingRight:'2rem'}}>
       <Form.Item
       label="CVDs"
