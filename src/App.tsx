@@ -2,7 +2,7 @@
  * @Description: Post-ERCP-Cholecustitis Discrimination计算页面
  * @Author: renlirong
  * @Date: 2024-04-12 10:08:40
- * @LastEditTime: 2024-04-14 18:37:16
+ * @LastEditTime: 2024-05-22 08:57:12
  * @LastEditors: renlirong
  */
 import React, { useState } from 'react';
@@ -140,7 +140,7 @@ function App() {
   };
   return (
     <Layout style={layoutStyle}>
-      <Header style={headerStyle}>Death risk stratification of  initial-dialysis patients</Header>
+      <Header style={headerStyle}>Death risk stratification of patients during the initial phase of dialysis</Header>
       <Content style={contentStyle}>
          <Card bordered={false} style={ cardStyle}>
           {/* <p style={{textAlign:'left'}}>Please input data in the text form:</p> */}
